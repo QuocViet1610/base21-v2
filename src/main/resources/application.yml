@@ -42,7 +42,7 @@ spring:
     show-sql: true
     open-in-view: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         jdbc:
@@ -51,3 +51,7 @@ spring:
         order_updates: true
         enable_dirty_tracking: false
         format_sql: true
+
+jwt:
+  secret: HMie6mCBoggM7emvLSV2v4/N+mp++S7ZK9hs83RqUkdqF6RhWFWonqaahlliZA0DxRO5hp/wzmPrBw8KTHU0Eg==
+  expiration: 86400000
