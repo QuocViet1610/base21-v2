@@ -199,4 +199,13 @@ public class GlobalExceptionHandler {
                 .message(message)
                 .build();
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseDto<?>> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+        log.error(">[VALIDATION_FAILED]: {}", e.getMessage(), e);
+        String msg = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        ResponseDto<?> responseDto = baseResponse(HttpStatus.BAD_REQUEST, "Validation failed: " + msg);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+    }
+
 }

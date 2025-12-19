@@ -16,7 +16,7 @@ import xtel.base21v2.module.account.entity.UserAccount;
 import xtel.base21v2.module.account.repository.LogoutManageRepo;
 import xtel.base21v2.module.account.repository.UserAccountRepository;
 import xtel.base21v2.module.account.service.AuthenticationService;
-
+import org.apache.commons.codec.digest.DigestUtils;
 import java.time.LocalDateTime;
 
 
@@ -33,7 +33,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public LoginDto login(AccountLoginRequest accountLoginRequest) {
         UserAccount account = accountRepository.findByUserName(accountLoginRequest.getUserName()).orElseThrow(() -> new CustomException(MessageCode.ACCOUNT_NOT_FOUND));
 
-        if (!new BCryptPasswordEncoder().matches(accountLoginRequest.getPassword(), account.getPassword())) {
+        if (!new BCryptPasswordEncoder().matches(DigestUtils.md5Hex(accountLoginRequest.getPassword()), account.getPassword()))
+        {
             throw new CustomException(MessageCode.INCORRECT_PASSWORD);
         }
         if (!Status.ACTIVE.equals(account.getStatus())) {
