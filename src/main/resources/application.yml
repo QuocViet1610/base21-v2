@@ -51,6 +51,28 @@ spring:
         order_updates: true
         enable_dirty_tracking: false
         format_sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          max-interval: 5000ms
+          multiplier: 2
+          max-retries: 3
+        concurrency: 1
+        max-concurrency: 5
+        default-requeue-rejected: false
+    queue:
+      name: demo_queue
+    exchange:
+      name: demo_exchange
+    routing:
+      key: demo_routing_key
 
 jwt:
   secret: HMie6mCBoggM7emvLSV2v4/N+mp++S7ZK9hs83RqUkdqF6RhWFWonqaahlliZA0DxRO5hp/wzmPrBw8KTHU0Eg==
