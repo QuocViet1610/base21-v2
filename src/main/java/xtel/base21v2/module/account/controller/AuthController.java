@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xtel.base21v2.module.account.domain.LoginDto;
 import xtel.base21v2.module.account.domain.request.AccountLoginRequest;
 import xtel.base21v2.module.account.domain.request.LogoutRequest;
+import xtel.base21v2.module.account.domain.request.RegisterDto;
 import xtel.base21v2.module.account.service.AuthenticationService;
 
 @Slf4j
@@ -29,6 +30,11 @@ public class AuthController {
     @Operation(summary = "Đăng xuất")
     public void logout(@RequestBody LogoutRequest logoutRequest) {
         authenticationService.logout(logoutRequest);
+    }
+    @PostMapping("register")
+    @Operation(summary = "Đăng ký")
+    public void register(@RequestBody RegisterDto registerDto) {
+        authenticationService.register(registerDto);
     }
 
 }

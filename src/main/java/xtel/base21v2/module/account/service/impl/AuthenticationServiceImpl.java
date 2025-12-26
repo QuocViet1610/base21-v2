@@ -1,5 +1,6 @@
 package xtel.base21v2.module.account.service.impl;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,8 @@ import xtel.base21v2.infrastructure.shared.model.TokenInfo;
 import xtel.base21v2.module.account.domain.LoginDto;
 import xtel.base21v2.module.account.domain.request.AccountLoginRequest;
 import xtel.base21v2.module.account.domain.request.LogoutRequest;
+import xtel.base21v2.module.account.domain.request.RegisterDto;
+import xtel.base21v2.module.account.domain.request.SendEmailEvent;
 import xtel.base21v2.module.account.entity.LogoutManage;
 import xtel.base21v2.module.account.entity.UserAccount;
 import xtel.base21v2.module.account.repository.LogoutManageRepo;
@@ -28,6 +31,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserAccountRepository accountRepository;
     private final JwtService jwtService;
     private final LogoutManageRepo logoutManageRepo;
+    private final SendMailService service;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public LoginDto login(AccountLoginRequest accountLoginRequest) {
@@ -62,4 +67,51 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         logoutManageRepo.save(logoutManage);
     }
 
+
+    @Override
+    @Transactional
+    public void register(RegisterDto register) {
+        UserAccount account = accountRepository.findByUserName(register.getUserName()).orElse(null);
+        if (account != null){
+            throw new CustomException("Đã tồn tại");
+        }
+        UserAccount accountSave = new UserAccount();
+        accountSave.setUserName(register.getUserName());
+        if (register.getPassword() != null && !register.getPassword().isEmpty()) {
+            accountSave.setPassword(new BCryptPasswordEncoder().encode(DigestUtils.md5Hex(register.getPassword())));
+        }
+
+//        accountRepository.save(accountSave);
+
+        //send mail
+//        service.sendEmail(register.getUserName()); // dùng Async
+        eventPublisher.publishEvent(new SendEmailEvent(register.getUserName()));
+
+        System.out.println("Thành công");
+        throw new RuntimeException("SendEmailEvent sẽ bị chặn lại nếu có rollback");
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

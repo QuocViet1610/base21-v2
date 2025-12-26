@@ -33,5 +33,4 @@ public class TopicConfig {
         return BindingBuilder.bind(allLogQueue).to(topicExchange).with("#");
     }
 
-
 }

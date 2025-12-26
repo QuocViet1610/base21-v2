@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
     public static final List<String> PUBLIC_PATHS = List.of(
-            "/api/auth/login",
+            "/api/auth/",
             "/api/auth/logout",
             "/api/v2/api-docs",
             "/api/v3/api-docs",
@@ -87,7 +87,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
     }
-
 
     private boolean isPublic(HttpServletRequest request) {
         return PUBLIC_PATHS.stream().anyMatch(path -> request.getRequestURI().startsWith(path));
